@@ -26,16 +26,49 @@ after_initial_jmp:
 	mov $end_boot_sector, %bx
 	int $0x13
 
-	jmp end_boot_sector
+	# enable A20
+	mov $0x2401, %ax
+	int $0x15
+
+	cli
+	lgdt (gdt_ptr)
+
+	# enter protected mode
+	mov %cr0, %eax
+	or $1, %eax
+	mov %eax, %cr0
+	# long jump to set cs
+	jmp $0x08, $begin_protected
+
+start_gdt:
+gdt_ptr:
+	# null entry - we store the gdt pointer (6 bytes) here, inside the null entry (8 bytes)
+	.short end_gdt - start_gdt - 1 # gdt size minus 1
+	.long start_gdt # base address
+	.short 0 # pad 2 bytes after the pointer to fill rest of the null entry
+	# entry 1 (kernel mode code)
+	.short 0xFFFF # bits 0-15 of limit address
+	.short 0 # bits 0-15 of base address
+	.byte 0 # bits 16-23 of base address
+	.byte 0b10011010 # access byte (exe bit = 1, code)
+	.byte 0b11001111 # upper part of limit address (bits 0-3), flags (bits 4-7)
+	.byte 0 # upper part of base address
+	# entry 2 (kernel mode data)
+	.short 0xFFFF # bits 0-15 of limit address
+	.short 0 # bits 0-15 of base address
+	.byte 0 # bits 16-23 of base address
+	.byte 0b10010010 # access byte (exe bit = 0, data)
+	.byte 0b11001111 # upper part of limit address (bits 0-3), flags (bits 4-7)
+	.byte 0 # upper part of base address
+end_gdt:
+
 	.org 510
 	.byte 0x55, 0xAA
 end_boot_sector:
 
-	# print test char
-	mov $0xE, %ah
-	mov $3, %al
-	mov $0x00, %bh
-	int $0x10
+begin_protected:
+	.code32
+	#sti
 
 stall:
 	jmp stall
