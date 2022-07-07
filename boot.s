@@ -15,11 +15,6 @@ after_initial_jmp:
 	# Set up stack
 	mov $0xFFF0, %sp
 
-	# print test char
-	mov $0xE, %ah
-	mov $3, %al
-	int $0x10
-
 	# read more sectors to memory
 	mov $0x02, %ah
 	mov $0x01, %al # number of sectors to read
@@ -29,10 +24,18 @@ after_initial_jmp:
 	# %dl holds the drive numer to read from, BIOS puts the __boot drive__ drive number in it during boot
 	# es:bx is the pointer to read to
 	mov $end_boot_sector, %bx
+	int $0x13
 
-stall:
-	jmp stall
-
+	jmp end_boot_sector
 	.org 510
 	.byte 0x55, 0xAA
 end_boot_sector:
+
+	# print test char
+	mov $0xE, %ah
+	mov $3, %al
+	mov $0x00, %bh
+	int $0x10
+
+stall:
+	jmp stall
