@@ -72,3 +72,7 @@ begin_protected:
 
 stall:
 	jmp stall
+
+
+
+	.org 1024 # we only read one additional sector, change the num-to-read in INT13h to get more (this .org will cause as to fail if the .org is past the 1024 mark)
