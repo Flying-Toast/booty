@@ -1,7 +1,6 @@
 	.code16
 	.section .text
 	# 0x7C00 base address is set by ld (see link.ld)
-
 	# Ensure we're using segment 0, because some BIOS load to 0x7C0:0x0000 instead of 0x0000:0x7C00 (equivalent physical address, but different segment)
 	jmp $0x00, $after_initial_jmp
 after_initial_jmp:
@@ -73,6 +72,8 @@ begin_protected:
 stall:
 	jmp stall
 
-
-
-	.org 1024 # we only read one additional sector, change the num-to-read in INT13h to get more (this .org will cause as to fail if the .org is past the 1024 mark)
+	.section .bin-end
+	.set LAST_SECTOR_MAGIC_LEN, 8 # minimum # of repetitions of the magic byte to use for marking the last sector
+	.rept LAST_SECTOR_MAGIC_LEN
+	.byte 0xCC # we use a series of at least LAST_SECTOR_MAGIC_LEN consecutive 0xCC bytes at the end of the last sector, so we know when we've loaded the last sector of our program
+	.endr

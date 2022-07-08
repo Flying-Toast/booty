@@ -8,5 +8,8 @@ SECTIONS {
 		*(.text)
 		*(.data)
 		*(.rodata)
+		*(.bin-end)
+		FILL(0xCC)
+		. = ALIGN(512);
 	}
 }
