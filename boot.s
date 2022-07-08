@@ -78,7 +78,7 @@ end_boot_sector:
 
 begin_protected:
 	.code32
-	mov $0xFFFFF0, %esp
+	mov $0x7BF0, %esp
 	call cmain
 stall:
 	jmp stall
