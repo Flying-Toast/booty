@@ -14,16 +14,27 @@ after_initial_jmp:
 	# Set up stack
 	mov $0xFFF0, %sp
 
-	# read more sectors to memory
+	# read more sectors to memory until we read one with the magic bytes at the end
+	mov $end_boot_sector, %bx # es:bx is the pointer to read to
+	mov $0x02, %cl # sector number 1-63 (bits 0-5)
+read_a_sector:
 	mov $0x02, %ah
 	mov $0x01, %al # number of sectors to read
 	xor %ch, %ch # cylinder number
-	mov $0x02, %cl # sector number 1-63 (bits 0-5)
 	xor %dh, %dh # head number
 	# %dl holds the drive numer to read from, BIOS puts the __boot drive__ drive number in it during boot
-	# es:bx is the pointer to read to
-	mov $end_boot_sector, %bx
 	int $0x13
+
+	# check for magic
+	add $512, %bx # increment buffer pointer to the next base address to read to
+	push %edx
+	mov $0xCCCCCCCC, %edx
+	cmp %edx, -4(%bx) # compare the last 32 bits of the previous sector
+	pop %edx
+	je done_reading_sectors
+	inc %cl
+	jmp read_a_sector
+done_reading_sectors:
 
 	# enable A20
 	mov $0x2401, %ax
@@ -72,8 +83,6 @@ begin_protected:
 stall:
 	jmp stall
 
+	# we use a series of at least 4 consecutive 0xCC bytes at the end of the last sector, so we know when we've loaded the last sector of our program
 	.section .bin-end
-	.set LAST_SECTOR_MAGIC_LEN, 8 # minimum # of repetitions of the magic byte to use for marking the last sector
-	.rept LAST_SECTOR_MAGIC_LEN
-	.byte 0xCC # we use a series of at least LAST_SECTOR_MAGIC_LEN consecutive 0xCC bytes at the end of the last sector, so we know when we've loaded the last sector of our program
-	.endr
+	.long 0xCCCCCCCC
