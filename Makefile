@@ -4,7 +4,7 @@ C_OBJS=main.o
 
 .PHONY: run
 run: bsect.bin
-	qemu-system-i386 bsect.bin -monitor stdio
+	qemu-system-i386 -monitor stdio -drive file=bsect.bin,format=raw
 
 bsect.bin: boot.o $(C_OBJS)
 	ld -T link.ld -m elf_i386 --orphan-handling=discard boot.o $(C_OBJS) -o bsect.bin
