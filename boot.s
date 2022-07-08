@@ -1,6 +1,6 @@
 	.code16
 	.section .text
-	# 0x7C00 base address is set by ld (see Makefile)
+	# 0x7C00 base address is set by ld (see link.ld)
 
 	# Ensure we're using segment 0, because some BIOS load to 0x7C0:0x0000 instead of 0x0000:0x7C00 (equivalent physical address, but different segment)
 	jmp $0x00, $after_initial_jmp
