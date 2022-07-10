@@ -76,6 +76,10 @@ end_gdt:
 	.byte 0x55, 0xAA
 end_boot_sector:
 
+.global default_isr
+default_isr:
+	iret
+
 begin_protected:
 	.code32
 	mov $0x7BF0, %esp
