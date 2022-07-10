@@ -1,6 +1,6 @@
 CC=gcc
 CFLAGS=-ffreestanding -Wall -Wextra -m32 -Os
-C_OBJS=main.o interrupts.o kstd.o
+C_OBJS=main.o interrupts.o kstd.o vga.o
 
 .PHONY: run
 run: bsect.bin
