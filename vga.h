@@ -21,5 +21,10 @@ enum vga_color {
 };
 
 void vga_clear_screen(enum vga_color clear_color);
+void vga_putc(char c);
+void vga_set_fg(enum vga_color color);
+void vga_set_bg(enum vga_color color);
+void vga_print(char *s);
+void vga_println(char *s);
 
 #endif
