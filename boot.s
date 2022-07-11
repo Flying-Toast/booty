@@ -76,16 +76,16 @@ end_gdt:
 	.byte 0x55, 0xAA
 end_boot_sector:
 
-.global default_isr
-default_isr:
-	iret
-
 begin_protected:
 	.code32
 	mov $0x7BF0, %esp
 	call cmain
 stall:
 	jmp stall
+
+.global default_isr
+default_isr:
+	iret
 
 	# we use a series of at least 4 consecutive 0xCC bytes at the end of the last sector, so we know when we've loaded the last sector of our program
 	.section .bin-end
