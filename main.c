@@ -3,7 +3,7 @@
 
 void cmain(void)
 {
-	install_idt();
+	setup_interrupts();
 	enable_interrupts();
 	vga_clear_screen(VGA_COLOR_LIGHT_MAGENTA);
 	vga_set_fg(VGA_COLOR_RED);

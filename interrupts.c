@@ -1,6 +1,7 @@
 #include <stdint.h>
 #include <stddef.h>
 #include "interrupts.h"
+#include "io.h"
 
 struct __attribute__((__packed__)) descriptor {
 	uint16_t offset_low;
@@ -20,7 +21,7 @@ static struct descriptor idt[256];
 extern char default_isr;
 static struct idt_ptr idt_ptr;
 
-static void install_default_isrs(void)
+static void install_isrs(void)
 {
 	for (size_t i = 0; i < sizeof(idt) / sizeof(idt[0]); ++i) {
 		idt[i].offset_low = ((uintptr_t) &default_isr) & 0xFFFF;
@@ -30,12 +31,33 @@ static void install_default_isrs(void)
 	}
 }
 
-void install_idt(void)
+static void install_idt(void)
 {
-	install_default_isrs();
+	install_isrs();
 	idt_ptr.size = sizeof(idt) -1;
 	idt_ptr.offset = (uintptr_t) &idt;
 	asm volatile ("lidt (%0)" :: "m"(idt_ptr));
+}
+
+static void remap_pics(void)
+{
+	// yuck, x86 :/
+	uint8_t mask1 = inb(0x21);
+	uint8_t mask2 = inb(0xA1);
+	outb(0x20, 0x11);
+	outb(0xA0, 0x11);
+	outb(0x21, 0x20); // pic 1 offset
+	outb(0xA1, 0x28); // pic 2 offset
+	outb(0x21, 4);
+	outb(0xA1, 2);
+	outb(0x21, mask1);
+	outb(0xA1, mask2);
+}
+
+void setup_interrupts(void)
+{
+	install_idt();
+	remap_pics();
 }
 
 void enable_interrupts(void)
