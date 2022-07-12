@@ -72,10 +72,6 @@ gdt_ptr:
 	.byte 0 # upper part of base address
 end_gdt:
 
-	.org 510
-	.byte 0x55, 0xAA
-end_boot_sector:
-
 begin_protected:
 	.code32
 	mov $0x7BF0, %esp
@@ -97,6 +93,10 @@ isr_done:
 	outb %al, $0x20
 	popa
 	iret
+
+	.org 510
+	.byte 0x55, 0xAA
+end_boot_sector:
 
 	# we use a series of at least 4 consecutive 0xCC bytes at the end of the last sector, so we know when we've loaded the last sector of our program
 	.section .bin-end
