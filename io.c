@@ -4,11 +4,9 @@ uint8_t inb(uint16_t port)
 {
 	uint8_t ret;
 	asm volatile (
-		"inb %1, %%al\n"
-		"mov %%al, %0\n"
-		:"=g"(ret)
-		:"r"(port)
-		:"%al"
+		"inb %1, %0\n"
+		:"=a"(ret)
+		:"d"(port)
 	);
 	return ret;
 }
