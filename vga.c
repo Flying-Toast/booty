@@ -1,4 +1,3 @@
-#include <stdint.h>
 #include <stddef.h>
 #include "kstd.h"
 #include "vga.h"
@@ -51,6 +50,25 @@ void vga_println(char *s)
 {
 	vga_print(s);
 	vga_putc('\n');
+}
+
+static void recursive_print_num(uint32_t n)
+{
+	if (n == 0)
+		return;
+
+	uint8_t digit = n % 10;
+	recursive_print_num(n / 10);
+	vga_putc('0' + digit);
+}
+
+void vga_print_num(uint32_t n)
+{
+	if (n == 0) {
+		vga_putc('0');
+		return;
+	}
+	recursive_print_num(n);
 }
 
 void vga_set_fg(enum vga_color color)

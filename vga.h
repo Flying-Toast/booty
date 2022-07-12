@@ -1,6 +1,8 @@
 #ifndef __HAVE_VGA_H
 #define __HAVE_VGA_H
 
+#include <stdint.h>
+
 enum vga_color {
 	VGA_COLOR_BLACK = 0,
 	VGA_COLOR_BLUE,
@@ -25,6 +27,7 @@ void vga_putc(char c);
 void vga_set_fg(enum vga_color color);
 void vga_set_bg(enum vga_color color);
 void vga_print(char *s);
+void vga_print_num(uint32_t n);
 void vga_println(char *s);
 
 #endif
