@@ -1,6 +1,6 @@
 CC=gcc
 CFLAGS=-ffreestanding -mno-red-zone -Wall -Wextra -m32 -Os
-C_OBJS=main.o interrupts.o kstd.o vga.o io.o
+C_OBJS=main.o interrupts.o kstd.o vga.o io.o keyboard.o
 
 .PHONY: run
 run: bsect.bin

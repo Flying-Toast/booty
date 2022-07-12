@@ -83,8 +83,16 @@ begin_protected:
 stall:
 	jmp stall
 
+.global asm_int21_wrapper
+asm_int21_wrapper:
+	call handle_keyboard_interrupt
+	jmp isr_done
+
 .global default_isr
 default_isr:
+isr_done:
+	mov $0x20, %al
+	outb %al, $0x20
 	iret
 
 	# we use a series of at least 4 consecutive 0xCC bytes at the end of the last sector, so we know when we've loaded the last sector of our program

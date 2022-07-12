@@ -17,9 +17,10 @@ struct __attribute__((__packed__)) idt_ptr {
 };
 
 static struct descriptor idt[256];
-// not actually a char, we just need to put an arbitrary type so we can get the address of the extern
-extern char default_isr;
 static struct idt_ptr idt_ptr;
+// not actually chars, we just need to put an arbitrary type so we can get the address of the externs
+extern char default_isr;
+extern char asm_int21_wrapper;
 
 static void install_isrs(void)
 {
@@ -29,6 +30,9 @@ static void install_isrs(void)
 		idt[i].flags = 0x8E;
 		idt[i].offset_high = ((uintptr_t) &default_isr) >> 16;
 	}
+
+	idt[0x21].offset_low = ((uintptr_t) &asm_int21_wrapper) & 0xFFFF;
+	idt[0x21].offset_high = ((uintptr_t) &asm_int21_wrapper) >> 16;
 }
 
 static void install_idt(void)
