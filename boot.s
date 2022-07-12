@@ -83,15 +83,19 @@ stall:
 asm_int21_wrapper:
 	pusha
 	call handle_keyboard_interrupt
-	jmp isr_done
-
-.global default_isr
-default_isr:
-	pusha
-isr_done:
 	mov $0x20, %al
 	outb %al, $0x20
 	popa
+	iret
+
+.global default_pic_isr
+default_pic_isr:
+	push %ax
+	mov $0x20, %al
+	outb %al, $0x20
+	pop %ax
+.global default_exception_handler
+default_exception_handler:
 	iret
 
 	.org 510
