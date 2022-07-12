@@ -3,11 +3,14 @@ CFLAGS=-ffreestanding -mno-red-zone -Wall -Wextra -m32 -Os
 C_OBJS=main.o interrupts.o kstd.o vga.o io.o keyboard.o
 
 .PHONY: run
-run: bsect.bin
-	@qemu-system-i386 -monitor stdio -drive file=bsect.bin,format=raw
+run: kern.bin
+	@qemu-system-i386 -monitor stdio -drive file=kern.bin,format=raw
 
-bsect.bin: boot.o $(C_OBJS)
-	@ld -T link.ld -m elf_i386 --orphan-handling=discard boot.o $(C_OBJS) -o bsect.bin
+kern.bin: kern.o
+	@objcopy --output-target=binary --only-section=.text kern.o kern.bin
+
+kern.o: boot.o $(C_OBJS)
+	@ld -T link.ld -m elf_i386 --orphan-handling=discard boot.o $(C_OBJS) -o kern.o
 
 boot.o: boot.s
 	@as --32 --fatal-warnings -o boot.o boot.s
@@ -18,4 +21,4 @@ boot.o: boot.s
 .PHONY: clean
 clean:
 	@$(RM) *.o
-	@$(RM) bsect.bin
+	@$(RM) kern.bin
