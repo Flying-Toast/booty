@@ -92,5 +92,6 @@ enum scancode {
 
 void setup_keyboard(void);
 bool is_key_down(enum scancode sc);
+char sc2ch(enum scancode sc);
 
 #endif
