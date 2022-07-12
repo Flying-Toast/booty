@@ -90,8 +90,7 @@ enum scancode {
 	SCANCODE_F12 = 0x58,
 };
 
-extern volatile bool keyboard_keystates[];
-
 void setup_keyboard(void);
+bool is_key_down(enum scancode sc);
 
 #endif

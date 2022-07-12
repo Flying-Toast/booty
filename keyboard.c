@@ -3,8 +3,13 @@
 #include "keyboard.h"
 #include "kstd.h"
 
-volatile bool keyboard_keystates[256 - (1<<7)];
+static volatile bool keyboard_keystates[256 - (1<<7)];
 static volatile bool pending_second_byte = false;
+
+bool is_key_down(enum scancode sc)
+{
+	return keyboard_keystates[sc];
+}
 
 void setup_keyboard(void)
 {

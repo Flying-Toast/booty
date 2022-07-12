@@ -85,14 +85,17 @@ stall:
 
 .global asm_int21_wrapper
 asm_int21_wrapper:
+	pusha
 	call handle_keyboard_interrupt
 	jmp isr_done
 
 .global default_isr
 default_isr:
+	pusha
 isr_done:
 	mov $0x20, %al
 	outb %al, $0x20
+	popa
 	iret
 
 	# we use a series of at least 4 consecutive 0xCC bytes at the end of the last sector, so we know when we've loaded the last sector of our program

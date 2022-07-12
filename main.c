@@ -14,8 +14,11 @@ void cmain(void)
 	vga_set_bg(VGA_COLOR_MAGENTA);
 
 	for(;;) {
-		if (keyboard_keystates[SCANCODE_Q]) {
+		if (is_key_down(SCANCODE_Q)) {
 			vga_println("Q key is down!");
+		}
+		if (is_key_down(SCANCODE_W)) {
+			vga_println("W key is down!");
 		}
 	}
 }
