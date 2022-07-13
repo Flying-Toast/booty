@@ -36,6 +36,11 @@ read_a_sector:
 	jmp read_a_sector
 done_reading_sectors:
 
+	# set video mode
+	xor %ah, %ah
+	mov $0x13, %al # VGA 320x200 256 color
+	int $0x10
+
 	# enable A20
 	mov $0x2401, %ax
 	int $0x15
