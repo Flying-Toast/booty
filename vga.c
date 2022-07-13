@@ -31,7 +31,9 @@ void vga_set_fill_color(uint8_t color)
 // (x, y) of top left corner
 void vga_fill_rect(unsigned x, unsigned y, unsigned width, unsigned height)
 {
-	// TODO: vaidate screen coords and don't overwrite video mem
+	CHECK_X(x + width);
+	CHECK_Y(y + height);
+
 	for (unsigned cy = y; cy < y + height; ++cy) {
 		for (unsigned cx = x; cx < x + width; ++cx) {
 			VGABUF[cy*SCREEN_WIDTH + cx] = fillcolor;
