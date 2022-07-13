@@ -14,7 +14,7 @@
 			panic(); \
 	} while (0)
 
-static uint8_t fillcolor = 0;
+static uint8_t drawcolor = 0;
 
 void vga_clear_screen(uint8_t color)
 {
@@ -23,9 +23,9 @@ void vga_clear_screen(uint8_t color)
 		((volatile uint32_t *)VGABUF)[i] = colorword;
 }
 
-void vga_set_fill_color(uint8_t color)
+void vga_set_draw_color(uint8_t color)
 {
-	fillcolor = color;
+	drawcolor = color;
 }
 
 // (x, y) of top left corner
@@ -36,7 +36,7 @@ void vga_fill_rect(unsigned x, unsigned y, unsigned width, unsigned height)
 
 	for (unsigned cy = y; cy < y + height; ++cy) {
 		for (unsigned cx = x; cx < x + width; ++cx) {
-			VGABUF[cy*SCREEN_WIDTH + cx] = fillcolor;
+			VGABUF[cy*SCREEN_WIDTH + cx] = drawcolor;
 		}
 	}
 }

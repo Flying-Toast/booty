@@ -7,7 +7,7 @@
 #define SCREEN_HEIGHT (200)
 
 void vga_clear_screen(uint8_t color);
-void vga_set_fill_color(uint8_t color);
+void vga_set_draw_color(uint8_t color);
 void vga_fill_rect(unsigned x, unsigned y, unsigned width, unsigned height);
 
 #endif
