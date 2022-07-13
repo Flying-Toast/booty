@@ -1,7 +1,18 @@
 #include <stddef.h>
 #include "vga.h"
+#include "panic.h"
 
 #define VGABUF ((volatile uint8_t *) 0xA0000)
+#define CHECK_X(x) \
+	do { \
+		if ((x) >= SCREEN_WIDTH) \
+			panic(); \
+	} while (0)
+#define CHECK_Y(y) \
+	do { \
+		if ((y) >= SCREEN_HEIGHT) \
+			panic(); \
+	} while (0)
 
 static uint8_t fillcolor = 0;
 
