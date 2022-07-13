@@ -1,6 +1,5 @@
 #include <stddef.h>
 #include "vga.h"
-#include "kstd.h"
 #include "panic.h"
 
 #define VGABUF ((volatile uint8_t *) 0xA0000)
@@ -45,5 +44,6 @@ void vga_fill_rect(unsigned x, unsigned y, unsigned width, unsigned height)
 
 void vga_present(void)
 {
-	memcpy(VGABUF, drawbuf, sizeof(drawbuf));
+	for (size_t i = 0; i < SCREEN_WIDTH * SCREEN_HEIGHT * sizeof(*drawbuf)/sizeof(uint32_t); ++i)
+		((volatile uint32_t *)VGABUF)[i] = ((uint32_t *)drawbuf)[i];
 }
