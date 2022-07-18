@@ -2,7 +2,7 @@ SECTIONS {
 	. = 0x7C00;
 
 	.text : {
-		boot.o(.text)
+		boot.ao(.text)
 		*(.text)
 		*(.data)
 		*(.rodata*)
